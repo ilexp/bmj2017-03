@@ -77,6 +77,9 @@ namespace DialogPrototype
 
 					// Let Eliza think
 					eliza.Update(userTyping);
+
+					// Don't run at CPU max speed
+					Thread.Sleep(1);
 				}
 			}
 		}
@@ -99,11 +102,21 @@ namespace DialogPrototype
 			DialogNode letMeIn = new DialogNode(null,
 				new Statement(new Message[]
 				{
-					new Message("Let me in.", vectorData)
+					new Message("let me in.", vectorData),
+					new Message("open the gate.", vectorData)
 				}),
 				new Statement(new Message[]
 				{
 					new Message("No.", vectorData),
+				}));
+			DialogNode password = new DialogNode(null,
+				new Statement(new Message[]
+				{
+					new Message("the password is clubmate.", vectorData)
+				}),
+				new Statement(new Message[]
+				{
+					new Message("Alright. I'll open the gate.", vectorData),
 				}));
 			dialogTree.Add(greetings);
 			dialogTree.Add(letMeIn);
