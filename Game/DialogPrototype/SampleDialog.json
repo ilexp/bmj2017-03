@@ -72,14 +72,36 @@
 			]
 		},
 		{
+			"input": [
+				{ "text": "what do I need to get in?" }
+			],
+			"output": [
+				{ "context": "CastleStaff", "text": "Only the castle staff may enter." },
+				{ "text": "You need to convince me that you should be in there." }
+			]
+		},
+		{
 			"context": "CastleStaff",
 			"input": [
 				{ "text": "i'm the chef" },
-				{ "text": "i belong to the castle staff" }
+				{ "text": "i belong to the castle staff" },
+				{ "text": "i am castle staff" }
 			],
 			"output": [
 				{ "text": "I know the staff, and you don't belong to it." },
 				{ "text": "I don't think so." }
+			]
+		},
+		{
+			"outContext": "Insults",
+			"input": [
+				{ "text": "fuck you" },
+				{ "text": "stupid idiot" }
+			],
+			"output": [
+				{ "text": "Calm down." },
+				{ "text": "Chill." },
+				{ "text": "Relax." }
 			]
 		},
 		{

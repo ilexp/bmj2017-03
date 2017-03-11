@@ -67,6 +67,9 @@ namespace DialogPrototype
 		{
 			if (string.IsNullOrEmpty(input)) return;
 
+			// Remove any occurrences of the bot name, so it doesn't confuse the phrase matching
+			input = Regex.Replace(input, @"\b[bB]ob\b", "");
+
 			Message inputMessage = new Message(input, this.vectorData);
 
 			this.newInput.Add(inputMessage);
@@ -95,7 +98,7 @@ namespace DialogPrototype
 			{
 				List<ScoredDialogNode> matchList = this.dialogTree.Match(this.context, message);
 				ScoredDialogNode localBestMatch = matchList.FirstOrDefault();
-				if (localBestMatch.Score < 0.1f) continue;
+				if (localBestMatch.Score < 0.15f) continue;
 
 				if (localBestMatch.Score * weight > bestMatch.Score)
 				{

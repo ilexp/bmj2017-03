@@ -51,6 +51,7 @@ namespace DialogPrototype
 
 			using (VectorDataStore vectorData = new VectorDataStore())
 			{
+				Console.ForegroundColor = ConsoleColor.DarkGray;
 				Console.WriteLine("Opening word vector database...");
 				vectorData.Open(
 					"..\\..\\..\\WordVectors\\wiki.en.vec.bin",
@@ -58,6 +59,16 @@ namespace DialogPrototype
 
 				Console.WriteLine("  {0} vectors available", vectorData.VectorCount);
 				Console.WriteLine("  {0} dimensions per vector", vectorData.VectorDimensions);
+				Console.WriteLine();
+				Console.ForegroundColor = ConsoleColor.Gray;
+				Console.WriteLine("This is an experiment for a dialog system. Imagine you are");
+				Console.WriteLine("actually playing some open world RPG game. Right now, you are");
+				Console.WriteLine("standing in front of the castle gate and need to get in to");
+				Console.WriteLine("fulfill some epic quest. However, castle guard Bob is in your way.");
+				Console.WriteLine();
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.WriteLine("Talk your way in.");
+				Console.ResetColor();
 				Console.WriteLine();
 
 				DialogTree sampleDialog = CreateSampleTree(vectorData);
