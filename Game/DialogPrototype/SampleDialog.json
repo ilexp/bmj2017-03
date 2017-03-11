@@ -1,0 +1,75 @@
+{
+	"nodes":
+	[
+		{
+			"context": null,
+			"input": 
+			[
+				{ "text": "hi" },
+				{ "text": "hello" },
+				{ "text": "good day" },
+				{ "text": "have a good day" }
+			],
+			"output":
+			[
+				{ "text": "What do you want?" },
+				{ "text": "What's up?" }
+			]
+		},
+		{
+			"context": null,
+			"input": 
+			[
+				{ "text": "let me in" },
+				{ "text": "open the gate" }
+			],
+			"output":
+			[
+				{ "context": "DontLetYouIn", "text": "No." },
+				{ "context": "DontLetYouIn", "text": "Definitely not." },
+				{ "context": "DontLetYouIn", "text": "Forget it." }
+			]
+		},
+		{
+			"context": null,
+			"input": 
+			[
+				{ "context": "DontLetYouIn", "text": "why not?" },
+				{ "context": "DontLetYouIn", "text": "what do you mean?" },
+				{ "text": "why don't you let me in?" },
+				{ "text": "why can't I get in?" }
+			],
+			"output":
+			[
+				{ "text": "You are not authorized." },
+				{ "text": "Nobody can pass this gate." },
+				{ "context": "CasteStaff", "text": "Only the castle staff may enter." },
+				{ "text": "I can't just let anyone in." }
+			]
+		},
+		{
+			"context": "CasteStaff",
+			"input": 
+			[
+				{ "text": "i'm the chef" },
+				{ "text": "i belong to the castle staff" }
+			],
+			"output":
+			[
+				{ "text": "I know the staff, and you don't belong to it." },
+				{ "text": "I don't think so." }
+			]
+		},
+		{
+			"context": "CasteStaff",
+			"input": 
+			[
+				{ "text": "clubmate" }
+			],
+			"output":
+			[
+				{ "text": "Alright. I'll open the gate." }
+			]
+		}
+	]
+}

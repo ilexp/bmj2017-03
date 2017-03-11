@@ -21,11 +21,14 @@ namespace DialogPrototype
 			get { return this.messages; }
 		}
 
-		public Statement(IEnumerable<Message> messages) : this(null, messages) { }
-		public Statement(DialogContext context, IEnumerable<Message> messages)
+		public Statement() : this(null) { }
+		public Statement(DialogContext context)
 		{
 			this.context = context;
-			this.messages.AddRange(messages);
+		}
+		public void Add(Message message)
+		{
+			this.messages.Add(message);
 		}
 		public float GetSimilarity(DialogContext context, Message other)
 		{

@@ -2,12 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace DialogPrototype
 {
-	public class DialogTree : IEnumerable<DialogNode>
+	public class DialogTree
 	{
 		private List<DialogNode> nodes = new List<DialogNode>();
 
@@ -36,13 +40,62 @@ namespace DialogPrototype
 			this.nodes.Add(node);
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
+
+		public static DialogTree Load(string filePath, VectorDataStore vectorData)
 		{
-			return this.nodes.GetEnumerator();
+			DialogTree tree = new DialogPrototype.DialogTree();
+			Dictionary<string, DialogContext> contextMap = new Dictionary<string, DialogContext>();
+
+			using (Stream stream = File.OpenRead(filePath))
+			using (StreamReader reader = new StreamReader(stream, Encoding.UTF8, true))
+			using (JsonTextReader jsonReader = new JsonTextReader(reader))
+			{
+				JObject jsonRoot = JObject.Load(jsonReader);
+				JArray jsonNodes = jsonRoot.Value<JArray>("nodes");
+				foreach (JObject jsonNode in jsonNodes)
+				{
+					string contextId = jsonNode.Value<string>("context");
+					DialogContext context = ParseContext(contextId, contextMap);
+
+					Statement input = new Statement(context);
+					foreach (JObject jsonMessage in jsonNode.Value<JArray>("input"))
+					{
+						Message message = ParseMessage(jsonMessage, vectorData, contextMap);
+						input.Add(message);
+					}
+
+					Statement output = new Statement(context);
+					foreach (JObject jsonMessage in jsonNode.Value<JArray>("output"))
+					{
+						Message message = ParseMessage(jsonMessage, vectorData, contextMap);
+						output.Add(message);
+					}
+
+					DialogNode node = new DialogNode(input, output);
+					tree.Add(node);
+				}
+			}
+
+			return tree;
 		}
-		IEnumerator<DialogNode> IEnumerable<DialogNode>.GetEnumerator()
+		private static Message ParseMessage(JObject jsonMessage, VectorDataStore vectorData, Dictionary<string,DialogContext> contextMap)
 		{
-			return this.nodes.GetEnumerator();
+			string contextId = jsonMessage.Value<string>("context");
+			string text = jsonMessage.Value<string>("text");
+			DialogContext context = ParseContext(contextId, contextMap);
+			return new Message(context, text, vectorData);
+		}
+		private static DialogContext ParseContext(string id, Dictionary<string, DialogContext> contextMap)
+		{
+			if (id == null) return null;
+
+			DialogContext context;
+			if (!contextMap.TryGetValue(id, out context))
+			{
+				context = new DialogContext(id);
+				contextMap.Add(id, context);
+			}
+			return context;
 		}
 	}
 }
