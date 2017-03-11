@@ -81,9 +81,9 @@
 			]
 		},
 		{
-			"context": "CastleStaff",
+			"outContext": "CastleStaff",
 			"input": [
-				{ "text": "i'm the chef" },
+				{ "context": "CastleStaff", "text": "i'm the chef" },
 				{ "text": "i belong to the castle staff" },
 				{ "text": "i am castle staff" }
 			],
