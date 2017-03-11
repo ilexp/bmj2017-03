@@ -30,6 +30,13 @@ namespace DialogPrototype
 		{
 			this.messages.Add(message);
 		}
+		public Message SelectRandomMessage(Random rnd, float timer)
+		{
+			Message message = rnd.OneOfWeighted(
+				this.messages,
+				m => Math.Min(60.0f, 0.000001f + (timer - m.LastTimeUsed) / 60.0f));
+			return message;
+		}
 		public float GetSimilarity(DialogContext context, Message other)
 		{
 			if (this.Context != null && this.Context != context)

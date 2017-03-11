@@ -13,9 +13,14 @@ namespace DialogPrototype
 {
 	public class DialogTree
 	{
+		private DialogNode dontGetItNode = null;
 		private List<DialogNode> nodes = new List<DialogNode>();
 
 
+		public DialogNode DontGetItNode
+		{
+			get { return this.dontGetItNode; }
+		}
 		public IEnumerable<DialogNode> Nodes
 		{
 			get { return this.nodes; }
@@ -51,32 +56,41 @@ namespace DialogPrototype
 			using (JsonTextReader jsonReader = new JsonTextReader(reader))
 			{
 				JObject jsonRoot = JObject.Load(jsonReader);
+
+				JObject jsonDontGetItNode = jsonRoot.Value<JObject>("dontGetItNode");
+				tree.dontGetItNode = ParseNode(jsonDontGetItNode, vectorData, contextMap);
+
 				JArray jsonNodes = jsonRoot.Value<JArray>("nodes");
 				foreach (JObject jsonNode in jsonNodes)
 				{
-					string contextId = jsonNode.Value<string>("context");
-					DialogContext context = ParseContext(contextId, contextMap);
-
-					Statement input = new Statement(context);
-					foreach (JObject jsonMessage in jsonNode.Value<JArray>("input"))
-					{
-						Message message = ParseMessage(jsonMessage, vectorData, contextMap);
-						input.Add(message);
-					}
-
-					Statement output = new Statement(context);
-					foreach (JObject jsonMessage in jsonNode.Value<JArray>("output"))
-					{
-						Message message = ParseMessage(jsonMessage, vectorData, contextMap);
-						output.Add(message);
-					}
-
-					DialogNode node = new DialogNode(input, output);
+					DialogNode node = ParseNode(jsonNode, vectorData, contextMap);
 					tree.Add(node);
 				}
 			}
 
 			return tree;
+		}
+		private static DialogNode ParseNode(JObject jsonNode, VectorDataStore vectorData, Dictionary<string, DialogContext> contextMap)
+		{
+			string contextId = jsonNode.Value<string>("context");
+			DialogContext context = ParseContext(contextId, contextMap);
+
+			Statement input = new Statement(context);
+			foreach (JObject jsonMessage in jsonNode.Value<JArray>("input"))
+			{
+				Message message = ParseMessage(jsonMessage, vectorData, contextMap);
+				input.Add(message);
+			}
+
+			Statement output = new Statement(context);
+			foreach (JObject jsonMessage in jsonNode.Value<JArray>("output"))
+			{
+				Message message = ParseMessage(jsonMessage, vectorData, contextMap);
+				output.Add(message);
+			}
+
+			DialogNode node = new DialogNode(input, output);
+			return node;
 		}
 		private static Message ParseMessage(JObject jsonMessage, VectorDataStore vectorData, Dictionary<string,DialogContext> contextMap)
 		{

@@ -1,11 +1,21 @@
 {
+	"dontGetItNode":
+	{
+		"input": [],
+		"output":
+		[
+			{ "text": "..." },
+			{ "text": "What?" },
+			{ "text": "...?" }
+		]
+	},
 	"nodes":
 	[
 		{
 			"context": null,
 			"input": 
 			[
-				{ "text": "hi" },
+				{ "text": "hey man" },
 				{ "text": "hello" },
 				{ "text": "good day" },
 				{ "text": "have a good day" }

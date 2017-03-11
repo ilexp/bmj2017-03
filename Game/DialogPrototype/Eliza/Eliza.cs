@@ -80,6 +80,13 @@ namespace DialogPrototype
 			Console.WriteLine(output);
 			this.lastOutput = this.timer;
 		}
+		public void Say(Statement statement)
+		{
+			Message response = statement.SelectRandomMessage(this.random, this.timer);
+			response.TickUsed(this.timer);
+			this.Say(response.Text);
+			this.context = response.Context ?? statement.Context ?? this.context;
+		}
 		public void ThinkAbout(IEnumerable<Message> input)
 		{
 			ScoredDialogNode bestMatch = default(ScoredDialogNode);
@@ -99,18 +106,9 @@ namespace DialogPrototype
 			}
 
 			if (bestMatch.Node != null)
-			{
-				Message response = this.random.OneOfWeighted(
-					bestMatch.Node.Output.Messages, 
-					m => Math.Min(60.0f, 0.000001f + (this.timer - m.LastTimeUsed) / 60.0f));
-				response.TickUsed(this.timer);
-				this.Say(response.Text);
-				this.context = response.Context ?? bestMatch.Node.Output.Context ?? this.context;
-			}
+				this.Say(bestMatch.Node.Output);
 			else
-			{
-				this.Say("...");
-			}
+				this.Say(this.dialogTree.DontGetItNode.Output);
 		}
 	}
 }

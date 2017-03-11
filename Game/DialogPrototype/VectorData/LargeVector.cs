@@ -61,10 +61,12 @@ namespace DialogPrototype
 		}
 		public static LargeVector Lerp(LargeVector left, LargeVector right, float factor)
 		{
-			LargeVector result = new LargeVector(left.Dimensions);
+			LargeVector result = new LargeVector(Math.Max(left.Dimensions, right.Dimensions));
+			float[] leftData = left.IsEmpty ? result.data : left.data;
+			float[] rightData = right.IsEmpty ? result.data : right.data;
 			for (int i = 0; i < result.data.Length; i++)
 			{
-				result.data[i] = left.data[i] * (1.0f - factor) + right.data[i] * factor;
+				result.data[i] = leftData[i] * (1.0f - factor) + rightData[i] * factor;
 			}
 			return result;
 		}

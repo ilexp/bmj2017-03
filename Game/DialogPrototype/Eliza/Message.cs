@@ -105,15 +105,16 @@ namespace DialogPrototype
 				float otherPos = begin + length * fullPos;
 
 				LargeVector localSample = this.SampleVector(thisPos);
-				if (localSample.IsEmpty) continue;
-
 				LargeVector otherSample = other.SampleVector(otherPos);
-				if (otherSample.IsEmpty) continue;
 
-				float lengthA = localSample.GetLength();
-				float lengthB = otherSample.GetLength();
+				float similarity = 0.1f;
+				if (!localSample.IsEmpty && !otherSample.IsEmpty)
+				{
+					float lengthA = localSample.GetLength();
+					float lengthB = otherSample.GetLength();
+					similarity = LargeVector.Dot(localSample, otherSample) / (lengthA * lengthB);
+				}
 
-				float similarity = LargeVector.Dot(localSample, otherSample) / (lengthA * lengthB);
 				totalSimilarity *= (double)similarity;
 			}
 
