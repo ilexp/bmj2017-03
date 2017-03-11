@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -8,25 +9,32 @@ namespace DialogPrototype
 {
 	public class Eliza
 	{
-		private VectorDataStore vectorData     = null;
-		private DialogTree      dialogTree     = null;
-		private List<string>    newInput       = new List<string>();
-		private List<string>    processedInput = new List<string>();
-		private DateTime        lastInput      = DateTime.Now;
-		private DateTime        lastOutput     = DateTime.MinValue;
-		private TimeSpan        waitOffset     = TimeSpan.Zero;
-		private Random          random         = new Random();
+		private VectorDataStore vectorData = null;
+		private DialogTree      dialogTree = null;
+		private List<Message>   newInput   = new List<Message>();
+		private float           lastInput  = 0.0f;
+		private float           lastOutput = 0.0f;
+		private float           waitOffset = 0.0f;
+		private Random          random     = new Random();
+		private Stopwatch       watch      = new Stopwatch();
+		private float           timer      = 0.0f;
 
 		public Eliza(VectorDataStore vectorData, DialogTree dialogTree)
 		{
 			this.vectorData = vectorData;
 			this.dialogTree = dialogTree;
+			this.watch.Start();
 		}
 
 		public void Update(bool userTyping)
 		{
+			// Advance the timer
+			this.timer += (float)this.watch.Elapsed.TotalSeconds;
+			this.watch.Reset();
+			this.watch.Start();
+
 			// Initially say hello
-			if (this.lastOutput == DateTime.MinValue)
+			if (this.lastOutput == 0.0f)
 			{
 				this.Say("Hello.");
 			}
@@ -36,37 +44,18 @@ namespace DialogPrototype
 			{
 				// Wait a little while until answering.
 				// Approximately as long as the user took writing the text.
-				TimeSpan userReactionTime = this.lastInput - this.lastOutput;
-				TimeSpan timeSinceInput = DateTime.Now - this.lastInput;
-				TimeSpan waitTime = TimeSpan.FromSeconds(Math.Min((userReactionTime + this.waitOffset).TotalSeconds * 0.5f, 5.0f));
-				if (timeSinceInput > waitTime && userReactionTime.TotalSeconds > 0.0f)
+				float userReactionTime = this.lastInput - this.lastOutput;
+				float timeSinceInput = this.timer - this.lastInput;
+				float waitTime = Math.Min((userReactionTime + this.waitOffset) * 0.5f, 3.0f);
+				if (timeSinceInput > waitTime && userReactionTime > 0.0f)
 				{
 					// Pick a new random answer time offset
-					this.waitOffset = TimeSpan.FromMilliseconds(0.35f * this.random.Next(
-						-(int)userReactionTime.TotalMilliseconds, 
-						(int)userReactionTime.TotalMilliseconds));
+					this.waitOffset = 0.35f * userReactionTime * 2.0f * ((float)this.random.NextDouble() - 0.5f);
 
-					// Join all the available inputs to one text
-					string joinedInput = "";
-					foreach (string input in newInput)
-					{
-						string joinStr = input.Trim();
-						if (!char.IsPunctuation(joinStr[joinStr.Length - 1]))
-							joinStr += ".";
-						joinedInput += joinStr + " ";
-					}
-
-					if (!string.IsNullOrWhiteSpace(joinedInput))
-					{
-						// Vectorize and pre-parse the input text
-						Message inputMessage = new Message(joinedInput, this.vectorData);
-
-						// Think about the input and potentially say something
-						this.ThinkAbout(inputMessage);
-					}
+					// Think about the input and potentially say something
+					this.ThinkAbout(this.newInput);
 
 					// Flag input as processed
-					this.processedInput.AddRange(this.newInput);
 					this.newInput.Clear();
 				}
 			}
@@ -76,8 +65,15 @@ namespace DialogPrototype
 		public void Listen(string input)
 		{
 			if (string.IsNullOrEmpty(input)) return;
-			this.newInput.Add(input);
-			this.lastInput = DateTime.Now;
+
+			input = input.Trim();
+			if (!char.IsPunctuation(input[input.Length - 1]))
+				input += ".";
+
+			Message inputMessage = new Message(input, this.vectorData);
+
+			this.newInput.Add(inputMessage);
+			this.lastInput = this.timer;
 		}
 		public void Say(string output)
 		{
@@ -85,13 +81,27 @@ namespace DialogPrototype
 			Console.Write("Bob: ");
 			Console.ForegroundColor = ConsoleColor.Gray;
 			Console.WriteLine(output);
-			this.lastOutput = DateTime.Now;
+			this.lastOutput = this.timer;
 		}
-		public void ThinkAbout(Message input)
+		public void ThinkAbout(IEnumerable<Message> input)
 		{
-			var matchList = this.dialogTree.Match(null, input);
-			var bestMatch = matchList.FirstOrDefault();
-			if (bestMatch.Score > 0.1f)
+			ScoredDialogNode bestMatch = default(ScoredDialogNode);
+			float weight = 1.0f;
+			foreach (Message message in input.Reverse())
+			{
+				List<ScoredDialogNode> matchList = this.dialogTree.Match(null, message);
+				ScoredDialogNode localBestMatch = matchList.FirstOrDefault();
+				if (localBestMatch.Score < 0.1f) continue;
+
+				if (localBestMatch.Score * weight > bestMatch.Score)
+				{
+					weight *= 0.8f;
+					bestMatch = localBestMatch;
+					break;
+				}
+			}
+
+			if (bestMatch.Node != null)
 			{
 				Message response = this.random.OneOf(bestMatch.Node.Output.Messages);
 				this.Say(response.Text);
