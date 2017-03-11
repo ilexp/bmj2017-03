@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncConsole.cs" />
+    <Compile Include="Eliza\Message.cs" />
     <Compile Include="Eliza\Eliza.cs" />
     <Compile Include="ExtMethodsRandom.cs" />
     <Compile Include="Program.cs" />
