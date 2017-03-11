@@ -87,39 +87,61 @@ namespace DialogPrototype
 		private static DialogTree CreateSampleTree(VectorDataStore vectorData)
 		{
 			DialogTree dialogTree = new DialogTree();
+
 			DialogNode greetings = new DialogNode(null,
 				new Statement(new Message[]
 				{
-					new Message("hi.", vectorData),
-					new Message("hello.", vectorData),
-					new Message("good day.", vectorData),
-					new Message("have a good day.", vectorData)
+					new Message("hi", vectorData),
+					new Message("hello", vectorData),
+					new Message("good day", vectorData),
+					new Message("have a good day", vectorData)
 				}),
 				new Statement(new Message[]
 				{
-					new Message("What do you want?", vectorData)
+					new Message("What do you want?", vectorData),
+					new Message("What's up?", vectorData)
 				}));
+			dialogTree.Add(greetings);
+
 			DialogNode letMeIn = new DialogNode(null,
 				new Statement(new Message[]
 				{
-					new Message("let me in.", vectorData),
-					new Message("open the gate.", vectorData)
+					new Message("let me in", vectorData),
+					new Message("open the gate", vectorData)
 				}),
 				new Statement(new Message[]
 				{
 					new Message("No.", vectorData),
+					new Message("Definitely not.", vectorData),
+					new Message("Forget it.", vectorData),
 				}));
+			dialogTree.Add(letMeIn);
+
+			DialogNode letMeInWhyNot = new DialogNode(letMeIn,
+				new Statement(new Message[]
+				{
+					new Message("why not?", vectorData)
+				}),
+				new Statement(new Message[]
+				{
+					new Message("You are not authorized.", vectorData),
+					new Message("Nobody can pass this gate.", vectorData),
+					new Message("Only the castle staff may enter.", vectorData),
+					new Message("I can't just let anyone in.", vectorData),
+				}));
+			dialogTree.Add(letMeInWhyNot);
+
 			DialogNode password = new DialogNode(null,
 				new Statement(new Message[]
 				{
-					new Message("the password is clubmate.", vectorData)
+					new Message("clubmate", vectorData)
 				}),
 				new Statement(new Message[]
 				{
 					new Message("Alright. I'll open the gate.", vectorData),
 				}));
-			dialogTree.Add(greetings);
-			dialogTree.Add(letMeIn);
+			dialogTree.Add(password);
+
 			return dialogTree;
 		}
 	}

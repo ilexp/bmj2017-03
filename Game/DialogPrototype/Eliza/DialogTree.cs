@@ -22,6 +22,9 @@ namespace DialogPrototype
 			List<ScoredDialogNode> rankedNodes = new List<ScoredDialogNode>();
 			foreach (DialogNode node in this.nodes)
 			{
+				if (node.Context != null && node.Context != context)
+					continue;
+
 				rankedNodes.Add(new ScoredDialogNode
 				{
 					Score = node.Matches(context, input),

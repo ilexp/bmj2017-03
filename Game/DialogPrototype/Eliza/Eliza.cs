@@ -18,6 +18,7 @@ namespace DialogPrototype
 		private Random          random     = new Random();
 		private Stopwatch       watch      = new Stopwatch();
 		private float           timer      = 0.0f;
+		private DialogNode      context    = null;
 
 		public Eliza(VectorDataStore vectorData, DialogTree dialogTree)
 		{
@@ -89,7 +90,7 @@ namespace DialogPrototype
 			float weight = 1.0f;
 			foreach (Message message in input.Reverse())
 			{
-				List<ScoredDialogNode> matchList = this.dialogTree.Match(null, message);
+				List<ScoredDialogNode> matchList = this.dialogTree.Match(this.context, message);
 				ScoredDialogNode localBestMatch = matchList.FirstOrDefault();
 				if (localBestMatch.Score < 0.1f) continue;
 
@@ -105,6 +106,7 @@ namespace DialogPrototype
 			{
 				Message response = this.random.OneOf(bestMatch.Node.Output.Messages);
 				this.Say(response.Text);
+				this.context = bestMatch.Node;
 			}
 		}
 	}
