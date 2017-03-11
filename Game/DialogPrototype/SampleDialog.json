@@ -2,82 +2,91 @@
 	"dontGetItNode":
 	{
 		"input": [],
-		"output":
-		[
+		"output": [
 			{ "text": "..." },
 			{ "text": "What?" },
 			{ "text": "...?" }
 		]
 	},
-	"nodes":
-	[
+	"nodes": [
 		{
-			"context": null,
-			"input": 
-			[
+			"input": [
 				{ "text": "hey man" },
 				{ "text": "hello" },
 				{ "text": "good day" },
 				{ "text": "have a good day" }
 			],
-			"output":
-			[
+			"output": [
 				{ "text": "What do you want?" },
 				{ "text": "What's up?" }
 			]
 		},
 		{
-			"context": null,
-			"input": 
-			[
-				{ "text": "let me in" },
-				{ "text": "open the gate" }
+			"outContext": "GuardTheGate",
+			"input": [
+				{ "text": "what are you doing?" },
+				{ "text": "what is your job?" }
 			],
-			"output":
-			[
+			"output": [
+				{ "text": "I'm guarding this gate." },
+				{ "text": "I make sure no-one gets past this gate." },
+				{ "text": "Ruining your day by not letting you past the gate." }
+			]
+		},
+		{
+			"inContext": "GuardTheGate",
+			"input": [
+				{ "text": "what is behind the gate?" },
+				{ "text": "what is inside?" }
+			],
+			"output": [
+				{ "text": "The castle, obviously." }
+			]
+		},
+		{
+			"input": [
+				{ "text": "let me in" },
+				{ "text": "open the gate" },
+				{ "text": "i want to visit the castle" },
+				{ "context": "DontLetYouIn", "text": "oh, come on" },
+				{ "context": "DontLetYouIn", "text": "please?" }
+			],
+			"output": [
 				{ "context": "DontLetYouIn", "text": "No." },
 				{ "context": "DontLetYouIn", "text": "Definitely not." },
 				{ "context": "DontLetYouIn", "text": "Forget it." }
 			]
 		},
 		{
-			"context": null,
-			"input": 
-			[
+			"input": [
 				{ "context": "DontLetYouIn", "text": "why not?" },
 				{ "context": "DontLetYouIn", "text": "what do you mean?" },
 				{ "text": "why don't you let me in?" },
 				{ "text": "why can't I get in?" }
 			],
-			"output":
-			[
+			"output": [
 				{ "text": "You are not authorized." },
 				{ "text": "Nobody can pass this gate." },
-				{ "context": "CasteStaff", "text": "Only the castle staff may enter." },
+				{ "context": "CastleStaff", "text": "Only the castle staff may enter." },
 				{ "text": "I can't just let anyone in." }
 			]
 		},
 		{
-			"context": "CasteStaff",
-			"input": 
-			[
+			"context": "CastleStaff",
+			"input": [
 				{ "text": "i'm the chef" },
 				{ "text": "i belong to the castle staff" }
 			],
-			"output":
-			[
+			"output": [
 				{ "text": "I know the staff, and you don't belong to it." },
 				{ "text": "I don't think so." }
 			]
 		},
 		{
-			"context": "CasteStaff",
-			"input": 
-			[
+			"input": [
 				{ "text": "clubmate" }
 			],
-			"output":
-			[
+			"output": [
 				{ "text": "Alright. I'll open the gate." }
 			]
 		}

@@ -72,17 +72,18 @@ namespace DialogPrototype
 		}
 		private static DialogNode ParseNode(JObject jsonNode, VectorDataStore vectorData, Dictionary<string, DialogContext> contextMap)
 		{
-			string contextId = jsonNode.Value<string>("context");
-			DialogContext context = ParseContext(contextId, contextMap);
+			DialogContext context = ParseContext(jsonNode.Value<string>("context"), contextMap);
+			DialogContext inContext = ParseContext(jsonNode.Value<string>("inContext"), contextMap);
+			DialogContext outContext = ParseContext(jsonNode.Value<string>("outContext"), contextMap);
 
-			Statement input = new Statement(context);
+			Statement input = new Statement(inContext ?? context);
 			foreach (JObject jsonMessage in jsonNode.Value<JArray>("input"))
 			{
 				Message message = ParseMessage(jsonMessage, vectorData, contextMap);
 				input.Add(message);
 			}
 
-			Statement output = new Statement(context);
+			Statement output = new Statement(outContext ?? context);
 			foreach (JObject jsonMessage in jsonNode.Value<JArray>("output"))
 			{
 				Message message = ParseMessage(jsonMessage, vectorData, contextMap);
