@@ -23,6 +23,11 @@ namespace DialogPrototype
 		{
 			this.rawText = text;
 
+			// Trim and add ending punctuation of not present
+			text = text.Trim();
+			if (!char.IsPunctuation(text[text.Length - 1]))
+				text += ".";
+
 			// Make sure punctuation counts as individual words
 			text = this.WordifyPunctuation(text);
 
@@ -39,6 +44,14 @@ namespace DialogPrototype
 			}
 		}
 
+		/// <summary>
+		/// Determines the similarity of this message to the specified other one.
+		/// 
+		/// Note: Sub-strings of the other message are considered, sub-strings of
+		/// this one are not.
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
 		public float GetSimilarity(Message other)
 		{
 			float similarity = 0.0f;
@@ -59,19 +72,26 @@ namespace DialogPrototype
 			return similarity;
 		}
 
+		/// <summary>
+		/// Determines the similarity of this message to the specified subsection of another one.
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
 		private float GetSimilarity(Message other, float begin, float length)
 		{
 			double totalSimilarity = 1.0d;
 
-			const int SampleCount = 20;
+			int SampleCount = 20;
 			for (int i = 0; i < SampleCount; i++)
 			{
-				float pos = begin + length * ((float)i / (float)(SampleCount - 1));
+				float fullPos = (float)i / (float)(SampleCount - 1);
+				float thisPos = fullPos;
+				float otherPos = begin + length * fullPos;
 
-				LargeVector localSample = this.SampleVector(pos);
+				LargeVector localSample = this.SampleVector(thisPos);
 				if (localSample.IsEmpty) continue;
 
-				LargeVector otherSample = other.SampleVector(pos);
+				LargeVector otherSample = other.SampleVector(otherPos);
 				if (otherSample.IsEmpty) continue;
 
 				float lengthA = localSample.GetLength();

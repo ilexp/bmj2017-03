@@ -67,10 +67,6 @@ namespace DialogPrototype
 		{
 			if (string.IsNullOrEmpty(input)) return;
 
-			input = input.Trim();
-			if (!char.IsPunctuation(input[input.Length - 1]))
-				input += ".";
-
 			Message inputMessage = new Message(input, this.vectorData);
 
 			this.newInput.Add(inputMessage);

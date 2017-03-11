@@ -50,12 +50,14 @@ namespace DialogPrototype
 
 			using (VectorDataStore vectorData = new VectorDataStore())
 			{
+				Console.WriteLine("Opening word vector database...");
 				vectorData.Open(
 					"..\\..\\..\\WordVectors\\wiki.en.vec.bin",
 					"..\\..\\..\\WordVectors\\wiki.en.vec.idx");
 
-				Console.WriteLine("{0} vectors available", vectorData.VectorCount);
-				Console.WriteLine("{0} dimensions per vector", vectorData.VectorDimensions);
+				Console.WriteLine("  {0} vectors available", vectorData.VectorCount);
+				Console.WriteLine("  {0} dimensions per vector", vectorData.VectorDimensions);
+				Console.WriteLine();
 
 				DialogTree sampleDialog = CreateSampleTree(vectorData);
 				Eliza eliza = new Eliza(vectorData, sampleDialog);
