@@ -49,12 +49,22 @@ namespace DialogPrototype
 			}
 		}
 
+
 		public static float Dot(LargeVector left, LargeVector right)
 		{
 			float result = 0.0f;
 			for (int i = 0; i < left.data.Length; i++)
 			{
 				result += left.data[i] * right.data[i];
+			}
+			return result;
+		}
+		public static LargeVector Lerp(LargeVector left, LargeVector right, float factor)
+		{
+			LargeVector result = new LargeVector(left.Dimensions);
+			for (int i = 0; i < result.data.Length; i++)
+			{
+				result.data[i] = left.data[i] * (1.0f - factor) + right.data[i] * factor;
 			}
 			return result;
 		}

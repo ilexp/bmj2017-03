@@ -46,6 +46,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncConsole.cs" />
+    <Compile Include="Eliza\ScoredDialogNode.cs" />
+    <Compile Include="Eliza\DialogTree.cs" />
+    <Compile Include="Eliza\DialogNode.cs" />
+    <Compile Include="Eliza\Statement.cs" />
     <Compile Include="Eliza\Message.cs" />
     <Compile Include="Eliza\Eliza.cs" />
     <Compile Include="ExtMethodsRandom.cs" />

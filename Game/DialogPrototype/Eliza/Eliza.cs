@@ -9,20 +9,28 @@ namespace DialogPrototype
 	public class Eliza
 	{
 		private VectorDataStore vectorData     = null;
+		private DialogTree      dialogTree     = null;
 		private List<string>    newInput       = new List<string>();
 		private List<string>    processedInput = new List<string>();
 		private DateTime        lastInput      = DateTime.Now;
-		private DateTime        lastOutput     = DateTime.Now;
+		private DateTime        lastOutput     = DateTime.MinValue;
 		private TimeSpan        waitOffset     = TimeSpan.Zero;
 		private Random          random         = new Random();
 
-		public Eliza(VectorDataStore vectorData)
+		public Eliza(VectorDataStore vectorData, DialogTree dialogTree)
 		{
 			this.vectorData = vectorData;
+			this.dialogTree = dialogTree;
 		}
 
 		public void Update(bool userTyping)
 		{
+			// Initially say hello
+			if (this.lastOutput == DateTime.MinValue)
+			{
+				this.Say("Hello.");
+			}
+
 			// Don't answer if the user hasn't said anything new - or is still typing.
 			if (this.newInput.Count > 0 && !userTyping)
 			{
@@ -31,7 +39,7 @@ namespace DialogPrototype
 				TimeSpan userReactionTime = this.lastInput - this.lastOutput;
 				TimeSpan timeSinceInput = DateTime.Now - this.lastInput;
 				TimeSpan waitTime = TimeSpan.FromSeconds(Math.Min((userReactionTime + this.waitOffset).TotalSeconds * 0.5f, 5.0f));
-				//if (timeSinceInput > waitTime && userReactionTime.TotalSeconds > 0.0f)
+				if (timeSinceInput > waitTime && userReactionTime.TotalSeconds > 0.0f)
 				{
 					// Pick a new random answer time offset
 					this.waitOffset = TimeSpan.FromMilliseconds(0.35f * this.random.Next(
@@ -53,8 +61,8 @@ namespace DialogPrototype
 						// Vectorize and pre-parse the input text
 						Message inputMessage = new Message(joinedInput, this.vectorData);
 
-						// Say something
-						this.Say(this.ThinkAbout(inputMessage));
+						// Think about the input and potentially say something
+						this.ThinkAbout(inputMessage);
 					}
 
 					// Flag input as processed
@@ -79,9 +87,15 @@ namespace DialogPrototype
 			Console.WriteLine(output);
 			this.lastOutput = DateTime.Now;
 		}
-		public string ThinkAbout(Message input)
+		public void ThinkAbout(Message input)
 		{
-			return "What are you talking about?";
+			var matchList = this.dialogTree.Match(null, input);
+			var bestMatch = matchList.FirstOrDefault();
+			if (bestMatch.Score > 0.1f)
+			{
+				Message response = this.random.OneOf(bestMatch.Node.Output.Messages);
+				this.Say(response.Text);
+			}
 		}
 	}
 }
