@@ -46,11 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncConsole.cs" />
-    <Compile Include="Eliza\ElizaDatabase.cs" />
     <Compile Include="Eliza\Eliza.cs" />
-    <Compile Include="Eliza\ElizaInputPattern.cs" />
-    <Compile Include="Eliza\ElizaSentence.cs" />
-    <Compile Include="Eliza\ElizaStatement.cs" />
     <Compile Include="ExtMethodsRandom.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

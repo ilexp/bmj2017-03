@@ -12,7 +12,7 @@ namespace DialogPrototype
 {
 	public static class Program
 	{
-		public static void Main(string[] args)
+		public static void Main2(string[] args)
 		{
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
@@ -40,7 +40,7 @@ namespace DialogPrototype
 				}
 			}
 		}
-		public static void Main2(string[] args)
+		public static void Main(string[] args)
 		{
 			AsyncConsole.UserPrefix = "You: ";
 			AsyncConsole.UserPrefixColor = ConsoleColor.Red;
