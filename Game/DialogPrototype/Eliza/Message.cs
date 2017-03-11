@@ -10,17 +10,24 @@ namespace DialogPrototype
 	{
 		private static readonly Regex RegexWordBounds = new Regex(@"\s+", RegexOptions.Compiled);
 
+		private DialogNode requiredContext;
 		private string rawText;
 		private string[] words;
 		private LargeVector[] vectors;
 
+		public DialogNode RequiredContext
+		{
+			get { return this.requiredContext; }
+		}
 		public string Text
 		{
 			get { return this.rawText; }
 		}
 
-		public Message(string text, VectorDataStore vectorData)
+		public Message(string text, VectorDataStore vectorData) : this(null, text, vectorData) { }
+		public Message(DialogNode requiredContext, string text, VectorDataStore vectorData)
 		{
+			this.requiredContext = requiredContext;
 			this.rawText = text;
 
 			// Trim and add ending punctuation of not present

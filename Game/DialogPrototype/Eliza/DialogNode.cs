@@ -8,14 +8,9 @@ namespace DialogPrototype
 {
 	public class DialogNode
 	{
-		private DialogNode context;
 		private Statement input;
 		private Statement output;
 
-		public DialogNode Context
-		{
-			get { return this.context; }
-		}
 		public Statement Input
 		{
 			get { return this.input; }
@@ -25,16 +20,15 @@ namespace DialogPrototype
 			get { return this.output; }
 		}
 
-		public DialogNode(DialogNode context, Statement input, Statement output)
+		public DialogNode(Statement input, Statement output)
 		{
-			this.context = context;
 			this.input = input;
 			this.output = output;
 		}
 
 		public float Matches(DialogNode context, Message input)
 		{
-			float inputSimilarity = this.input.GetSimilarity(input);
+			float inputSimilarity = this.input.GetSimilarity(context, input);
 			return inputSimilarity;
 		}
 	}

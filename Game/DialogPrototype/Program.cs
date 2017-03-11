@@ -19,13 +19,14 @@ namespace DialogPrototype
 
 			using (VectorDataStore vectorData = new VectorDataStore())
 			{
+				Console.WriteLine("Opening word vector database...");
 				vectorData.Open(
 					"..\\..\\..\\WordVectors\\wiki.en.vec.bin", 
 					"..\\..\\..\\WordVectors\\wiki.en.vec.idx");
 
-				Console.WriteLine("{0} vectors available", vectorData.VectorCount);
-				Console.WriteLine("{0} dimensions per vector", vectorData.VectorDimensions);
-			
+				Console.WriteLine("  {0} vectors available", vectorData.VectorCount);
+				Console.WriteLine("  {0} dimensions per vector", vectorData.VectorDimensions);
+
 				Console.WriteLine();
 				Console.WriteLine("Enter two words to check semantic similarity");
 				Console.WriteLine();
@@ -90,7 +91,7 @@ namespace DialogPrototype
 		{
 			DialogTree dialogTree = new DialogTree();
 
-			DialogNode greetings = new DialogNode(null,
+			DialogNode greetings = new DialogNode(
 				new Statement(new Message[]
 				{
 					new Message("hi", vectorData),
@@ -105,7 +106,7 @@ namespace DialogPrototype
 				}));
 			dialogTree.Add(greetings);
 
-			DialogNode letMeIn = new DialogNode(null,
+			DialogNode letMeIn = new DialogNode(
 				new Statement(new Message[]
 				{
 					new Message("let me in", vectorData),
@@ -119,10 +120,10 @@ namespace DialogPrototype
 				}));
 			dialogTree.Add(letMeIn);
 
-			DialogNode letMeInWhyNot = new DialogNode(letMeIn,
+			DialogNode letMeInWhyNot = new DialogNode(
 				new Statement(new Message[]
 				{
-					new Message("why not?", vectorData)
+					new Message(letMeIn, "why not?", vectorData)
 				}),
 				new Statement(new Message[]
 				{
@@ -133,7 +134,7 @@ namespace DialogPrototype
 				}));
 			dialogTree.Add(letMeInWhyNot);
 
-			DialogNode password = new DialogNode(null,
+			DialogNode password = new DialogNode(
 				new Statement(new Message[]
 				{
 					new Message("clubmate", vectorData)

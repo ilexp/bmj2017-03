@@ -104,6 +104,10 @@ namespace DialogPrototype
 				this.Say(response.Text);
 				this.context = bestMatch.Node;
 			}
+			else
+			{
+				this.Say("...");
+			}
 		}
 	}
 }

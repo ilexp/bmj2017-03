@@ -20,11 +20,14 @@ namespace DialogPrototype
 		{
 			this.messages.AddRange(messages);
 		}
-		public float GetSimilarity(Message other)
+		public float GetSimilarity(DialogNode context, Message other)
 		{
 			float maxSimilarity = 0.0f;
 			foreach (Message message in this.messages)
 			{
+				if (message.RequiredContext != null && message.RequiredContext != context)
+					continue;
+
 				float similarity = message.GetSimilarity(other);
 				maxSimilarity = (float)Math.Max(similarity, maxSimilarity);
 			}
