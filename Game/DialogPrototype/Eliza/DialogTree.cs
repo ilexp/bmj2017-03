@@ -17,7 +17,7 @@ namespace DialogPrototype
 			get { return this.nodes; }
 		}
 
-		public List<ScoredDialogNode> Match(DialogNode context, Message input)
+		public List<ScoredDialogNode> Match(DialogContext context, Message input)
 		{
 			List<ScoredDialogNode> rankedNodes = new List<ScoredDialogNode>();
 			foreach (DialogNode node in this.nodes)

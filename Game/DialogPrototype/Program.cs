@@ -106,13 +106,14 @@ namespace DialogPrototype
 				}));
 			dialogTree.Add(greetings);
 
+			DialogContext dontLetYouInContext = new DialogContext("DontLetYouInContext");
 			DialogNode letMeIn = new DialogNode(
 				new Statement(new Message[]
 				{
 					new Message("let me in", vectorData),
 					new Message("open the gate", vectorData)
 				}),
-				new Statement(new Message[]
+				new Statement(dontLetYouInContext, new Message[]
 				{
 					new Message("No.", vectorData),
 					new Message("Definitely not.", vectorData),
@@ -120,19 +121,36 @@ namespace DialogPrototype
 				}));
 			dialogTree.Add(letMeIn);
 
+			DialogContext castleStaffContext = new DialogContext("CasteStaffContext");
 			DialogNode letMeInWhyNot = new DialogNode(
 				new Statement(new Message[]
 				{
-					new Message(letMeIn, "why not?", vectorData)
+					new Message(dontLetYouInContext, "why not?", vectorData),
+					new Message(dontLetYouInContext, "what do you mean?", vectorData),
+					new Message("why don't you let me in?", vectorData),
+					new Message("why can't I get in?", vectorData)
 				}),
 				new Statement(new Message[]
 				{
 					new Message("You are not authorized.", vectorData),
 					new Message("Nobody can pass this gate.", vectorData),
-					new Message("Only the castle staff may enter.", vectorData),
+					new Message(castleStaffContext, "Only the castle staff may enter.", vectorData),
 					new Message("I can't just let anyone in.", vectorData),
 				}));
 			dialogTree.Add(letMeInWhyNot);
+
+			DialogNode castleStaff = new DialogNode(
+				new Statement(castleStaffContext, new Message[]
+				{
+					new Message("i'm the chef", vectorData),
+					new Message("i belong to the castle staff", vectorData)
+				}),
+				new Statement(new Message[]
+				{
+					new Message("I know the staff, and you don't belong to it.", vectorData),
+					new Message("I don't think so.", vectorData)
+				}));
+			dialogTree.Add(castleStaff);
 
 			DialogNode password = new DialogNode(
 				new Statement(new Message[]

@@ -26,7 +26,7 @@ namespace DialogPrototype
 			this.output = output;
 		}
 
-		public float Matches(DialogNode context, Message input)
+		public float Matches(DialogContext context, Message input)
 		{
 			float inputSimilarity = this.input.GetSimilarity(context, input);
 			return inputSimilarity;

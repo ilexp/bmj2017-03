@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncConsole.cs" />
+    <Compile Include="Eliza\DialogContext.cs" />
     <Compile Include="Eliza\ScoredDialogNode.cs" />
     <Compile Include="Eliza\DialogTree.cs" />
     <Compile Include="Eliza\DialogNode.cs" />

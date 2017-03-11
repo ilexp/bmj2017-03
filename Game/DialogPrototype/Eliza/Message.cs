@@ -10,14 +10,19 @@ namespace DialogPrototype
 	{
 		private static readonly Regex RegexWordBounds = new Regex(@"\s+", RegexOptions.Compiled);
 
-		private DialogNode requiredContext;
+		private float lastTimeUsed = -10000000.0f;
+		private DialogContext context;
 		private string rawText;
 		private string[] words;
 		private LargeVector[] vectors;
 
-		public DialogNode RequiredContext
+		public float LastTimeUsed
 		{
-			get { return this.requiredContext; }
+			get { return this.lastTimeUsed; }
+		}
+		public DialogContext Context
+		{
+			get { return this.context; }
 		}
 		public string Text
 		{
@@ -25,9 +30,9 @@ namespace DialogPrototype
 		}
 
 		public Message(string text, VectorDataStore vectorData) : this(null, text, vectorData) { }
-		public Message(DialogNode requiredContext, string text, VectorDataStore vectorData)
+		public Message(DialogContext requiredContext, string text, VectorDataStore vectorData)
 		{
-			this.requiredContext = requiredContext;
+			this.context = requiredContext;
 			this.rawText = text;
 
 			// Trim and add ending punctuation of not present
@@ -51,6 +56,10 @@ namespace DialogPrototype
 			}
 		}
 
+		public void TickUsed(float time)
+		{
+			this.lastTimeUsed = Math.Max(time, this.lastTimeUsed);
+		}
 		/// <summary>
 		/// Determines the similarity of this message to the specified other one.
 		/// 

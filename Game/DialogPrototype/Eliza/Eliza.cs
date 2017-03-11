@@ -18,7 +18,7 @@ namespace DialogPrototype
 		private Random          random     = new Random();
 		private Stopwatch       watch      = new Stopwatch();
 		private float           timer      = 0.0f;
-		private DialogNode      context    = null;
+		private DialogContext   context    = null;
 
 		public Eliza(VectorDataStore vectorData, DialogTree dialogTree)
 		{
@@ -100,9 +100,12 @@ namespace DialogPrototype
 
 			if (bestMatch.Node != null)
 			{
-				Message response = this.random.OneOf(bestMatch.Node.Output.Messages);
+				Message response = this.random.OneOfWeighted(
+					bestMatch.Node.Output.Messages, 
+					m => Math.Min(60.0f, 0.000001f + (this.timer - m.LastTimeUsed) / 60.0f));
+				response.TickUsed(this.timer);
 				this.Say(response.Text);
-				this.context = bestMatch.Node;
+				this.context = response.Context ?? bestMatch.Node.Output.Context ?? this.context;
 			}
 			else
 			{
