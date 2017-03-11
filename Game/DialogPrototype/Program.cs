@@ -121,7 +121,7 @@ namespace DialogPrototype
 				}));
 			dialogTree.Add(letMeIn);
 
-			DialogContext castleStaffContext = new DialogContext("CasteStaffContext");
+			DialogContext castleStaffContext = new DialogContext("CastleStaffContext");
 			DialogNode letMeInWhyNot = new DialogNode(
 				new Statement(new Message[]
 				{
